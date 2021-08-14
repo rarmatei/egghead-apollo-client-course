@@ -1,0 +1,10 @@
+{
+  "name": "apollo-course",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "npm --prefix=client start & npm --prefix=server start"
+  },
+  "author": "",
+  "license": "ISC"
+}

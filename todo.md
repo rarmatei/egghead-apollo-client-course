@@ -1,0 +1,6 @@
+- extract component into ViewComponents, so that I end up with simple components that I can use when teaching 
+- add a dropdown with categories that fires when a category changes
+- Edit Note
+    - change note text input
+    - save button
+    - category changer
