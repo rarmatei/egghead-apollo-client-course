@@ -14,7 +14,7 @@ export function UiAppLayout({ children }) {
     );
   } else {
     contents = (
-      <Flex>
+      <Flex padding="10px">
         <Box>{children}</Box>
       </Flex>
     );
