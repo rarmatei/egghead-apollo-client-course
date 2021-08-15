@@ -7,7 +7,7 @@ export function UiAppMainHeader() {
         boxSize="50px"
         objectFit="cover"
         src="/apollo-graphql-compact.svg"
-        alt="Segun Adebayo"
+        alt="apollo-logo"
       />
       <Heading fontSize="2rem">Apollo Notes</Heading>
     </Flex>
