@@ -2,9 +2,9 @@ import { Box, Select } from "@chakra-ui/react";
 
 function SelectCategory({ onCategoryChange, defaultValue }) {
   const categories = [
-    { id: "1", label: "🛒 Shopping" },
-    { id: "2", label: "💭 Random thoughts" },
-    { id: "3", label: "✈️ Holiday Planning" },
+    { id: "1", label: "✈️ Holiday Planning" },
+    { id: "2", label: "🛒 Shopping" },
+    { id: "3", label: "📝 Saved articles" },
   ];
   return (
     <Box>

@@ -3,8 +3,8 @@ import { UiNote } from "./shared-ui";
 import { gql, useQuery } from "@apollo/client";
 
 const ALL_NOTES_QUERY = gql`
-  query GetAllNotes {
-    notes {
+  query GetAllNotes($categoryId: String) {
+    notes(categoryId: $categoryId) {
       id
       content
       category {
@@ -14,8 +14,12 @@ const ALL_NOTES_QUERY = gql`
   }
 `;
 
-export function NoteList() {
-  const { data } = useQuery(ALL_NOTES_QUERY);
+export function NoteList({category}) {
+  const { data } = useQuery(ALL_NOTES_QUERY, {
+    variables: {
+      categoryId: category
+    }
+  });
   const notes = data?.notes;
   return (
     <Stack spacing={4}>
