@@ -1,4 +1,4 @@
-import { Stack } from "@chakra-ui/react";
+import { Spinner, Stack } from "@chakra-ui/react";
 import { UiNote } from "./shared-ui";
 import { gql, useQuery } from "@apollo/client";
 
@@ -15,12 +15,16 @@ const ALL_NOTES_QUERY = gql`
 `;
 
 export function NoteList({category}) {
-  const { data } = useQuery(ALL_NOTES_QUERY, {
+  const { data, loading } = useQuery(ALL_NOTES_QUERY, {
     variables: {
       categoryId: category
-    },
-    fetchPolicy: "cache-and-network"
+    }
   });
+
+  if(loading) {
+    return <Spinner />
+  }
+
   const notes = data?.notes;
   return (
     <Stack spacing={4}>
