@@ -18,7 +18,8 @@ export function NoteList({category}) {
   const { data } = useQuery(ALL_NOTES_QUERY, {
     variables: {
       categoryId: category
-    }
+    },
+    fetchPolicy: "cache-and-network"
   });
   const notes = data?.notes;
   return (
