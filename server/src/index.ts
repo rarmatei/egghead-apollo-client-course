@@ -141,9 +141,10 @@ let unpublishedNotes = [
 const resolvers = {
   Note: {
     category: (parent) => {
-      // if (parent.id === "14") {
-      //   throw new Error(`Could not retrieve note with ID ${parent.id}`);
-      // }
+      if (parent.id === "8") {
+        console.log("ERROR!");
+        throw new Error(`Could not retrieve note with ID ${parent.id}`);
+      }
       return categories.find((category) => category.id === parent.categoryId);
     },
   },
