@@ -1,4 +1,4 @@
-import { Spinner, Stack } from "@chakra-ui/react";
+import { Heading, Spinner, Stack } from "@chakra-ui/react";
 import { UiNote } from "./shared-ui";
 import { gql, useQuery } from "@apollo/client";
 
@@ -14,18 +14,23 @@ const ALL_NOTES_QUERY = gql`
   }
 `;
 
-export function NoteList({category}) {
-  const { data, loading } = useQuery(ALL_NOTES_QUERY, {
+export function NoteList({ category }) {
+  const { data, loading, error } = useQuery(ALL_NOTES_QUERY, {
     variables: {
-      categoryId: category
-    }
+      categoryId: category,
+    },
+    errorPolicy: "all",
   });
 
-  if(loading) {
-    return <Spinner />
+  if (error && !data) {
+    return <Heading> Could not load notes. </Heading>;
   }
 
-  const notes = data?.notes;
+  if (loading) {
+    return <Spinner />;
+  }
+
+  const notes = data?.notes.filter((note) => !!note);
   return (
     <Stack spacing={4}>
       {notes?.map((note) => (
