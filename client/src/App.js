@@ -5,6 +5,7 @@ import { useState } from "react";
 import { SelectCategory } from "./SelectCategory";
 import { Route } from "react-router-dom";
 import { EditNote } from "./EditNote";
+import { EditCategories } from "./EditCategories";
 
 function App() {
   const [selectedCategory, setSelectedCategory] = useState("1");
@@ -15,6 +16,7 @@ function App() {
           defaultValue={selectedCategory}
           onCategoryChange={(category) => setSelectedCategory(category)}
         />
+        <EditCategories />
         <NoteList category={selectedCategory} />
       </Stack>
       <Route path={`/note/:noteId`}>
