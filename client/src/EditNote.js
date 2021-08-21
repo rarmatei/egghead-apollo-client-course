@@ -16,8 +16,8 @@ export function EditNote() {
 
   const { data } = useQuery(GET_NOTE, {
     variables: {
-      id: noteId
-    }
+      id: noteId,
+    },
   });
 
   const [updateNote, { loading }] = useMutation(gql`
@@ -32,12 +32,18 @@ export function EditNote() {
     }
   `);
 
-  return <UiEditNote isSaving={loading} onSave={(newContent) => {
-    updateNote({
-      variables: {
-        id: noteId,
-        content: newContent
-      }
-    })
-  }} note={data?.note} />;
+  return (
+    <UiEditNote
+      isSaving={loading}
+      onSave={(newContent) => {
+        updateNote({
+          variables: {
+            id: noteId,
+            content: newContent,
+          },
+        });
+      }}
+      note={data?.note}
+    />
+  );
 }
