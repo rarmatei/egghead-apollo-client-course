@@ -1,4 +1,4 @@
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { UiEditNote } from "./shared-ui";
 
@@ -20,13 +20,17 @@ export function EditNote() {
     }
   });
 
-  const [updateNote, {loading}] = useMutation(gql`
+  const [updateNote, { loading }] = useMutation(gql`
     mutation UpdateNote($id: String!, $content: String!) {
       updateNote(id: $id, content: $content) {
         successful
+        note {
+          id
+          content
+        }
       }
     }
-  `)
+  `);
 
   return <UiEditNote isSaving={loading} onSave={(newContent) => {
     updateNote({
