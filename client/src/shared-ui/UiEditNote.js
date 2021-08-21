@@ -5,10 +5,17 @@ function UiEditNote({ note, onSave, isSaving, isNoteSelected }) {
   function save(e) {
     e.preventDefault();
     const newContent = e.target.elements.noteContents.value;
-    onSave(newContent);
+    onSave && onSave(newContent);
   }
+
   if (!note) {
     return <UiNotFound />;
+  }
+  let selectionInfo = null;
+  if (isNoteSelected !== undefined) {
+    selectionInfo = (
+      <Text padding="10px 0">Selected: {isNoteSelected ? "yes" : "no"}</Text>
+    );
   }
   return (
     <Box
@@ -22,7 +29,7 @@ function UiEditNote({ note, onSave, isSaving, isNoteSelected }) {
       </Heading>
       <form onSubmit={save}>
         <Textarea key={note.id} id="noteContents" defaultValue={note.content} />
-        <Text padding="10px 0">Selected: {isNoteSelected ? "yes" : "no"}</Text>
+        {selectionInfo}
         <Button isLoading={isSaving} type="submit" colorScheme="blue">
           Save
         </Button>
