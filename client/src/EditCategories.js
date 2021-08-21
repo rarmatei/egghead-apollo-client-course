@@ -1,7 +1,15 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { gql } from "@apollo/client/core";
 import { UiEditCategories } from "./shared-ui/UiEditCategories";
-import { ALL_CATEGORIES_QUERY } from "./SelectCategory";
+
+export const ALL_CATEGORIES_QUERY = gql`
+  query GetCategories {
+    categories {
+      id
+      label
+    }
+  }
+`;
 
 export function EditCategories() {
   const { data } = useQuery(ALL_CATEGORIES_QUERY);

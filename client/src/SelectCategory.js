@@ -1,14 +1,6 @@
 import { Box, Select } from "@chakra-ui/react";
-import { gql, useQuery } from "@apollo/client";
-
-export const ALL_CATEGORIES_QUERY = gql`
-  query GetCategories {
-    categories {
-      id
-      label
-    }
-  }
-`;
+import { useQuery } from "@apollo/client";
+import { ALL_CATEGORIES_QUERY } from "./EditCategories";
 
 function SelectCategory({ onCategoryChange, defaultValue }) {
   const { data } = useQuery(ALL_CATEGORIES_QUERY);
