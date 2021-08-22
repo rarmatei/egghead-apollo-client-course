@@ -1,6 +1,6 @@
 import { Heading, Spinner, Stack } from "@chakra-ui/react";
 import { DeleteButton, UiNote, ViewNoteButton } from "./shared-ui";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { Link } from "react-router-dom";
 
 const ALL_NOTES_QUERY = gql`
@@ -24,6 +24,18 @@ export function NoteList({ category }) {
     errorPolicy: "all",
   });
 
+  const [deleteNote] = useMutation(
+    gql`
+      mutation DeleteNote($noteId: String!) {
+        deleteNote(id: $noteId) {
+          successful
+        }
+      }
+    `, {
+      refetchQueries: ["GetAllNotes"]
+    }
+  )
+
   if (error && !data) {
     return <Heading> Could not load notes. </Heading>;
   }
@@ -45,7 +57,7 @@ export function NoteList({ category }) {
             <ViewNoteButton />
           </Link>
           <DeleteButton
-            onClick={() => console.log(`delete clicked on note ${note.id}`)}
+            onClick={() => deleteNote({ variables: { noteId: note.id } })}
           />
         </UiNote>
       ))}
