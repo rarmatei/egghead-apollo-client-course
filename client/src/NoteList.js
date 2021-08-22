@@ -1,5 +1,5 @@
 import { Heading, Spinner, Stack } from "@chakra-ui/react";
-import { UiNote, ViewNoteButton } from "./shared-ui";
+import { DeleteButton, UiNote, ViewNoteButton } from "./shared-ui";
 import { gql, useQuery } from "@apollo/client";
 import { Link } from "react-router-dom";
 
@@ -44,6 +44,9 @@ export function NoteList({ category }) {
           <Link to={`/note/${note.id}`}>
             <ViewNoteButton />
           </Link>
+          <DeleteButton
+            onClick={() => console.log(`delete clicked on note ${note.id}`)}
+          />
         </UiNote>
       ))}
     </Stack>
