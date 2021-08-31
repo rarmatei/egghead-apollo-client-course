@@ -34,23 +34,25 @@ export function NoteList({ category }) {
           }
         }
       }
-    `, {
+    `,
+    {
       update: (cache, mutationResult) => {
         const deletedNoteId = cache.identify(
           mutationResult.data?.deleteNote.note
         );
+        console.log({ mutationResult, deletedNoteId });
         cache.modify({
           fields: {
             notes: (existingNotes) => {
-              return existingNotes.filter(noteRef => {
+              return existingNotes.filter((noteRef) => {
                 return cache.identify(noteRef) !== deletedNoteId;
               });
-            }
-          }
+            },
+          },
         });
-      }
+      },
     }
-  )
+  );
 
   if (error && !data) {
     return <Heading> Could not load notes. </Heading>;
@@ -73,7 +75,11 @@ export function NoteList({ category }) {
             <ViewNoteButton />
           </Link>
           <DeleteButton
-            onClick={() => deleteNote({ variables: { noteId: note.id } })}
+            onClick={() =>
+              deleteNote({ variables: { noteId: note.id } }).catch((e) =>
+                console.error(e)
+              )
+            }
           />
         </UiNote>
       ))}
