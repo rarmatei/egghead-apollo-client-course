@@ -36,6 +36,18 @@ export function NoteList({ category }) {
       }
     `,
     {
+      optimisticResponse: (vars) => {
+        return {
+          deleteNote: {
+            successful: true, 
+            __typename: "DeleteNoteResponse",
+            note: {
+              id: vars.noteId,
+              __typename: "Note"
+            }
+          }
+        }
+      },
       update: (cache, mutationResult) => {
         const deletedNoteId = cache.identify(
           mutationResult.data?.deleteNote.note
@@ -76,9 +88,7 @@ export function NoteList({ category }) {
           </Link>
           <DeleteButton
             onClick={() =>
-              deleteNote({ variables: { noteId: note.id } }).catch((e) =>
-                console.error(e)
-              )
+              deleteNote({ variables: { noteId: note.id } }).catch(e => console.error(e))
             }
           />
         </UiNote>
