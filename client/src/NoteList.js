@@ -52,16 +52,16 @@ export function NoteList({ category }) {
         const deletedNoteId = cache.identify(
           mutationResult.data?.deleteNote.note
         );
-        console.log({ mutationResult, deletedNoteId });
         cache.modify({
           fields: {
             notes: (existingNotes) => {
               return existingNotes.filter((noteRef) => {
                 return cache.identify(noteRef) !== deletedNoteId;
               });
-            },
+            }
           },
         });
+        cache.evict({ id: deletedNoteId });
       },
     }
   );
