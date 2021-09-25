@@ -6,6 +6,8 @@ import { BrowserRouter } from "react-router-dom";
 import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from } from "@apollo/client";
 import { RetryLink } from '@apollo/client/link/retry';
 
+const selectedNoteIds = ["2"];
+
 const httpLink = new HttpLink({
   uri: "http://localhost:4000/graphql"
 });
@@ -34,8 +36,9 @@ const client = new ApolloClient({
       Note: {
         fields: {
           isSelected: {
-            read: () => {
-              return true;
+            read: (currentIsSelectedValue, helpers) => {
+              const currentNoteId = helpers.readField("id");
+              return selectedNoteIds.includes(currentNoteId);
             }
           }
         }
