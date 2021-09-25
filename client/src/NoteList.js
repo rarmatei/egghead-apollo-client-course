@@ -91,8 +91,9 @@ export function NoteList({ category }) {
           category={note.category.label}
         >
           <Checkbox
-            onChange={(e) => console.log("selected: ", e.target.checked)}
-            isChecked={note.isSelected}
+            onChange={(e) =>
+              console.log(`Note ${note.id} is selected: `, e.target.checked)
+            }
           >
             Select
           </Checkbox>
