@@ -34,6 +34,7 @@ export function EditNote() {
 
   return (
     <UiEditNote
+      isNoteSelected={false}
       isSaving={loading}
       onSave={(newContent) => {
         updateNote({
