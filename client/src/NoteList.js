@@ -1,11 +1,11 @@
 import { Heading, Spinner, Stack } from "@chakra-ui/react";
-import { DeleteButton, UiNote, ViewNoteButton } from "./shared-ui";
+import { DeleteButton, UiLoadMoreButton, UiNote, ViewNoteButton } from "./shared-ui";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { Link } from "react-router-dom";
 
 const ALL_NOTES_QUERY = gql`
-  query GetAllNotes($categoryId: String) {
-    notes(categoryId: $categoryId) {
+  query GetAllNotes($categoryId: String, $offset: Int, $limit: Int) {
+    notes(categoryId: $categoryId, offset: $offset, limit: $limit) {
       id
       content
       category {
@@ -17,9 +17,11 @@ const ALL_NOTES_QUERY = gql`
 `;
 
 export function NoteList({ category }) {
-  const { data, loading, error } = useQuery(ALL_NOTES_QUERY, {
+  const { data, loading, error, fetchMore } = useQuery(ALL_NOTES_QUERY, {
     variables: {
       categoryId: category,
+      offset: 0,
+      limit: 3
     },
     errorPolicy: "all",
   });
@@ -93,6 +95,7 @@ export function NoteList({ category }) {
           />
         </UiNote>
       ))}
+      <UiLoadMoreButton onClick={() => fetchMore({ variables: { offset: data.notes.length } })} />
     </Stack>
   );
 }
