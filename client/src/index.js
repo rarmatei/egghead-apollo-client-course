@@ -30,6 +30,15 @@ const client = new ApolloClient({
             }
           }
         }
+      },
+      Note: {
+        fields: {
+          isSelected: {
+            read: () => {
+              return true;
+            }
+          }
+        }
       }
     }
   }),

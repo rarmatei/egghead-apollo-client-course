@@ -7,12 +7,14 @@ import {
 } from "./shared-ui";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const ALL_NOTES_QUERY = gql`
   query GetAllNotes($categoryId: String, $offset: Int, $limit: Int) {
     notes(categoryId: $categoryId, offset: $offset, limit: $limit) {
       id
       content
+      isSelected @client
       category {
         id
         label
@@ -94,6 +96,7 @@ export function NoteList({ category }) {
             onChange={(e) =>
               console.log(`Note ${note.id} is selected: `, e.target.checked)
             }
+            isChecked={note.isSelected}
           >
             Select
           </Checkbox>

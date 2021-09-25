@@ -7,6 +7,7 @@ const GET_NOTE = gql`
     note(id: $id) {
       id
       content
+      isSelected @client
     }
   }
 `;
@@ -34,7 +35,7 @@ export function EditNote() {
 
   return (
     <UiEditNote
-      isNoteSelected={false}
+      isNoteSelected={data?.note.isSelected}
       isSaving={loading}
       onSave={(newContent) => {
         updateNote({
