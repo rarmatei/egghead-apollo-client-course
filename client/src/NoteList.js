@@ -1,5 +1,10 @@
-import { Heading, Spinner, Stack } from "@chakra-ui/react";
-import { DeleteButton, UiLoadMoreButton, UiNote, ViewNoteButton } from "./shared-ui";
+import { Checkbox, Heading, Spinner, Stack } from "@chakra-ui/react";
+import {
+  DeleteButton,
+  UiLoadMoreButton,
+  UiNote,
+  ViewNoteButton,
+} from "./shared-ui";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { Link } from "react-router-dom";
 
@@ -21,7 +26,7 @@ export function NoteList({ category }) {
     variables: {
       categoryId: category,
       offset: 0,
-      limit: 3
+      limit: 3,
     },
     errorPolicy: "all",
   });
@@ -41,14 +46,14 @@ export function NoteList({ category }) {
       optimisticResponse: (vars) => {
         return {
           deleteNote: {
-            successful: true, 
+            successful: true,
             __typename: "DeleteNoteResponse",
             note: {
               id: vars.noteId,
-              __typename: "Note"
-            }
-          }
-        }
+              __typename: "Note",
+            },
+          },
+        };
       },
       update: (cache, mutationResult) => {
         const deletedNoteId = cache.identify(
@@ -60,7 +65,7 @@ export function NoteList({ category }) {
               return existingNotes.filter((noteRef) => {
                 return cache.identify(noteRef) !== deletedNoteId;
               });
-            }
+            },
           },
         });
         cache.evict({ id: deletedNoteId });
@@ -85,17 +90,27 @@ export function NoteList({ category }) {
           content={note.content}
           category={note.category.label}
         >
+          <Checkbox
+            onChange={(e) => console.log("selected: ", e.target.checked)}
+            isChecked={note.isSelected}
+          >
+            Select
+          </Checkbox>
           <Link to={`/note/${note.id}`}>
             <ViewNoteButton />
           </Link>
           <DeleteButton
             onClick={() =>
-              deleteNote({ variables: { noteId: note.id } }).catch(e => console.error(e))
+              deleteNote({ variables: { noteId: note.id } }).catch((e) =>
+                console.error(e)
+              )
             }
           />
         </UiNote>
       ))}
-      <UiLoadMoreButton onClick={() => fetchMore({ variables: { offset: data.notes.length } })} />
+      <UiLoadMoreButton
+        onClick={() => fetchMore({ variables: { offset: data.notes.length } })}
+      />
     </Stack>
   );
 }
