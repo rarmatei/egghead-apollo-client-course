@@ -12,6 +12,7 @@ import {
   makeVar,
 } from "@apollo/client";
 import { RetryLink } from "@apollo/client/link/retry";
+import { RestLink } from 'apollo-link-rest';
 
 let selectedNoteIds = makeVar(["2"]);
 
@@ -24,6 +25,8 @@ export function setNoteSelection(noteId, isSelected) {
     );
   }
 }
+
+const restLink = new RestLink({ uri: "http://localhost:4000/rest-api" });
 
 const httpLink = new HttpLink({
   uri: "http://localhost:4000/graphql",
@@ -71,7 +74,7 @@ const client = new ApolloClient({
       },
     },
   }),
-  link: from([retryLink, httpLink]),
+  link: from([retryLink, restLink, httpLink]),
 });
 
 ReactDOM.render(
