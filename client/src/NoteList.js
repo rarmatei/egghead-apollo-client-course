@@ -12,7 +12,6 @@ import { setNoteSelection } from ".";
 const ALL_NOTES_QUERY = gql`
   query GetAllNotes($categoryId: String, $offset: Int, $limit: Int) {
     notes(categoryId: $categoryId, offset: $offset, limit: $limit)
-    @rest(type: "Note", path: "/notes?categoryId={args.categoryId}&offset={args.offset}&limit={args.limit}")
     {
       id
       content
@@ -38,22 +37,31 @@ export function NoteList({ category }) {
   const [deleteNote] = useMutation(
     gql`
       mutation DeleteNote($noteId: String!) {
-        deleteNote(id: $noteId)
-        @rest(path: "/notes/{args.id}", method: "DELETE", type: "DeleteNoteResponse")
-        {
+        deleteNote(id: $noteId) {
           successful
-          note @type(name: "Note") {
+          note {
             id
           }
         }
       }
     `,
     {
+      optimisticResponse: (vars) => {
+        return {
+          deleteNote: {
+            successful: true,
+            __typename: "DeleteNoteResponse",
+            note: {
+              id: vars.noteId,
+              __typename: "Note",
+            },
+          },
+        };
+      },
       update: (cache, mutationResult) => {
         const deletedNoteId = cache.identify(
           mutationResult.data?.deleteNote.note
         );
-        console.log({ deletedNoteId })
         cache.modify({
           fields: {
             notes: (existingNotes) => {
