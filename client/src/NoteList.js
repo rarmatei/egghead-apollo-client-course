@@ -13,10 +13,10 @@ import { setNoteSelection } from ".";
 const ALL_NOTES_QUERY = gql`
   query GetAllNotes($categoryId: String, $offset: Int, $limit: Int) {
     notes(categoryId: $categoryId, offset: $offset, limit: $limit) {
-      id @client
+      id
       content
-      isSelected 
-      category  {
+      isSelected @client
+      category {
         id
         label
       }
