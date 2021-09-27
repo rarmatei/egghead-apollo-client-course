@@ -226,14 +226,14 @@ const resolvers = {
 };
 
 //For polling lesson
-setInterval(() => {
-  if (unpublishedCategories.length === 0) {
-    return;
-  }
-  const newCategory = unpublishedCategories.shift();
-  categories.unshift(newCategory);
-  console.log("ADDED CATEGORY");
-}, 45000);
+// setInterval(() => {
+//   if (unpublishedCategories.length === 0) {
+//     return;
+//   }
+//   const newCategory = unpublishedCategories.shift();
+//   categories.unshift(newCategory);
+//   console.log("ADDED CATEGORY");
+// }, 45000);
 
 // For subscription lesson
 // setInterval(() => {
