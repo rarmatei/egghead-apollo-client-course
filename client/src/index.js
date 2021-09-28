@@ -10,9 +10,12 @@ import {
   HttpLink,
   from,
   makeVar,
+  split
 } from "@apollo/client";
 import { RetryLink } from "@apollo/client/link/retry";
 import { RestLink } from 'apollo-link-rest';
+import { WebSocketLink } from '@apollo/client/link/ws';
+import { getMainDefinition } from '@apollo/client/utilities';
 
 let selectedNoteIds = makeVar(["2"]);
 
@@ -26,11 +29,24 @@ export function setNoteSelection(noteId, isSelected) {
   }
 }
 
+const websocketLink = new WebSocketLink({
+  uri: "ws://localhost:4000/graphql"
+})
+
 const restLink = new RestLink({ uri: "http://localhost:4000/rest-api" });
 
 const httpLink = new HttpLink({
   uri: "http://localhost:4000/graphql",
 });
+
+const protocolLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return definition.operation === "subscription"; // or "query" or "mutation"
+  },
+  websocketLink,
+  httpLink
+)
 
 const retryLink = new RetryLink({
   delay: {
@@ -74,7 +90,7 @@ const client = new ApolloClient({
       },
     },
   }),
-  link: from([retryLink, restLink, httpLink]),
+  link: from([retryLink, restLink, protocolLink]),
 });
 
 ReactDOM.render(

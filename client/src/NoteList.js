@@ -1,18 +1,17 @@
-import { Checkbox, Heading, Spinner, Stack } from "@chakra-ui/react";
+import { Checkbox, Heading, Spinner, Stack, Text } from "@chakra-ui/react";
 import {
   DeleteButton,
   UiLoadMoreButton,
   UiNote,
   ViewNoteButton,
 } from "./shared-ui";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
 import { Link } from "react-router-dom";
 import { setNoteSelection } from ".";
 
 const ALL_NOTES_QUERY = gql`
   query GetAllNotes($categoryId: String, $offset: Int, $limit: Int) {
-    notes(categoryId: $categoryId, offset: $offset, limit: $limit)
-    {
+    notes(categoryId: $categoryId, offset: $offset, limit: $limit) {
       id
       content
       isSelected @client
@@ -76,6 +75,25 @@ export function NoteList({ category }) {
     }
   );
 
+  const { data: newNoteData } = useSubscription(gql`
+    subscription NewSharedNote($categoryId: String) {
+      newSharedNote(categoryId: $categoryId) {
+        id
+        content
+        category {
+          id
+          label
+        }
+      }
+    }
+  `, {
+    variables: {
+      categoryId: category
+    }
+  })
+
+  const newNote = newNoteData?.newSharedNote;
+
   if (error && !data) {
     return <Heading> Could not load notes. </Heading>;
   }
@@ -84,9 +102,18 @@ export function NoteList({ category }) {
     return <Spinner />;
   }
 
+  const recentChanges = newNote && (
+    <>
+      <Text>Recent changes: </Text>
+      <UiNote category={newNote.category.label} content={newNote.content}>
+      </UiNote>
+    </>
+  );
+
   const notes = data?.notes.filter((note) => !!note);
   return (
     <Stack spacing={4}>
+      {recentChanges}
       {notes?.map((note) => (
         <UiNote
           key={note.id}

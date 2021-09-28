@@ -236,16 +236,16 @@ const resolvers = {
 // }, 45000);
 
 // For subscription lesson
-// setInterval(() => {
-//   if (unpublishedNotes.length === 0) {
-//     return;
-//   }
-//   const newNote = unpublishedNotes.shift();
-//   allNotes.unshift(newNote);
-//   pubsub.publish("NEW_SHARED_NOTE", {
-//     newSharedNote: newNote,
-//   });
-// }, 8000);
+setInterval(() => {
+  if (unpublishedNotes.length === 0) {
+    return;
+  }
+  const newNote = unpublishedNotes.shift();
+  allNotes.unshift(newNote);
+  pubsub.publish("NEW_SHARED_NOTE", {
+    newSharedNote: newNote,
+  });
+}, 15000);
 
 (async function () {
   const app = express();
