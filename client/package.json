@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@apollo/client": "3.4.7",
+    "@apollo/client": "3.4.15",
     "@chakra-ui/icons": "^1.0.13",
     "@chakra-ui/react": "^1.6.1",
     "@emotion/react": "^11",
@@ -12,7 +12,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "apollo-link-rest": "^0.8.0-beta.0",
-    "apollo3-cache-persist": "0.12.1",
+    "apollo3-cache-persist": "0.13.0",
     "framer-motion": "^4",
     "graphql": "^15.5.0",
     "graphql-anywhere": "^4.2.7",

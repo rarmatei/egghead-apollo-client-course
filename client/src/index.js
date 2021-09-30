@@ -5,17 +5,17 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter } from "react-router-dom";
 import {
   ApolloClient,
-  InMemoryCache,
   ApolloProvider,
-  HttpLink,
   from,
+  HttpLink,
+  InMemoryCache,
   makeVar,
-  split
+  split,
 } from "@apollo/client";
 import { RetryLink } from "@apollo/client/link/retry";
-import { RestLink } from 'apollo-link-rest';
-import { WebSocketLink } from '@apollo/client/link/ws';
-import { getMainDefinition } from '@apollo/client/utilities';
+import { RestLink } from "apollo-link-rest";
+import { WebSocketLink } from "@apollo/client/link/ws";
+import { getMainDefinition } from "@apollo/client/utilities";
 
 let selectedNoteIds = makeVar(["2"]);
 
@@ -30,8 +30,8 @@ export function setNoteSelection(noteId, isSelected) {
 }
 
 const websocketLink = new WebSocketLink({
-  uri: "ws://localhost:4000/graphql"
-})
+  uri: "ws://localhost:4000/graphql",
+});
 
 const restLink = new RestLink({ uri: "http://localhost:4000/rest-api" });
 
@@ -46,7 +46,7 @@ const protocolLink = split(
   },
   websocketLink,
   httpLink
-)
+);
 
 const retryLink = new RetryLink({
   delay: {
@@ -61,12 +61,6 @@ const client = new ApolloClient({
     typePolicies: {
       Query: {
         fields: {
-          notes: {
-            keyArgs: ["categoryId"],
-            merge: (existingNotes = [], incomingNotes) => {
-              return [...existingNotes, ...incomingNotes];
-            },
-          },
           note: {
             read: (valueInCache, helpers) => {
               const queriedNoteId = helpers.args.id;

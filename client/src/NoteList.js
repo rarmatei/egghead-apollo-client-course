@@ -1,11 +1,11 @@
-import { Checkbox, Heading, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Checkbox, Heading, Stack } from "@chakra-ui/react";
 import {
   DeleteButton,
   UiLoadMoreButton,
   UiNote,
   ViewNoteButton,
 } from "./shared-ui";
-import { gql, useApolloClient, useMutation, useQuery, useSubscription } from "@apollo/client";
+import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client";
 import { Link } from "react-router-dom";
 import { setNoteSelection } from ".";
 import { useEffect } from "react";
@@ -25,14 +25,17 @@ const ALL_NOTES_QUERY = gql`
 `;
 
 export function NoteList({ category }) {
-  const { data, loading, error, fetchMore, subscribeToMore } = useQuery(ALL_NOTES_QUERY, {
-    variables: {
-      categoryId: category,
-      offset: 0,
-      limit: 3,
-    },
-    errorPolicy: "all",
-  });
+  const { data, error, fetchMore, subscribeToMore } = useQuery(
+    ALL_NOTES_QUERY,
+    {
+      variables: {
+        categoryId: category,
+        offset: 0,
+        limit: 3,
+      },
+      errorPolicy: "all",
+    }
+  );
 
   const [deleteNote] = useMutation(
     gql`
@@ -93,7 +96,7 @@ export function NoteList({ category }) {
         }
       `,
       variables: {
-        categoryId: category
+        categoryId: category,
       },
       updateQuery: (previousQueryResult, { subscriptionData }) => {
         const newNote = subscriptionData.data.newSharedNote;
@@ -101,24 +104,20 @@ export function NoteList({ category }) {
           query: ALL_NOTES_QUERY,
           data: {
             ...previousQueryResult, // __typename: ....
-            notes: [newNote, ...previousQueryResult.notes]
+            notes: [newNote, ...previousQueryResult.notes],
           },
           variables: {
-            categoryId: category
+            categoryId: category,
           },
-          overwrite: true
+          overwrite: true,
         });
-      }
+      },
     });
     return unsubscribe;
   }, [category]);
 
   if (error && !data) {
     return <Heading> Could not load notes. </Heading>;
-  }
-
-  if (loading) {
-    return <Spinner />;
   }
 
   const notes = data?.notes.filter((note) => !!note);
