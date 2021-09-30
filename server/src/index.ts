@@ -245,7 +245,8 @@ setInterval(() => {
   pubsub.publish("NEW_SHARED_NOTE", {
     newSharedNote: newNote,
   });
-}, 15000);
+  console.log("PUBLISHED NOTE");
+}, 30000);
 
 (async function () {
   const app = express();

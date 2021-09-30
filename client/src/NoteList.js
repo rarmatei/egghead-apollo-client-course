@@ -5,9 +5,10 @@ import {
   UiNote,
   ViewNoteButton,
 } from "./shared-ui";
-import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
+import { gql, useApolloClient, useMutation, useQuery, useSubscription } from "@apollo/client";
 import { Link } from "react-router-dom";
 import { setNoteSelection } from ".";
+import { useEffect } from "react";
 
 const ALL_NOTES_QUERY = gql`
   query GetAllNotes($categoryId: String, $offset: Int, $limit: Int) {
@@ -24,7 +25,7 @@ const ALL_NOTES_QUERY = gql`
 `;
 
 export function NoteList({ category }) {
-  const { data, loading, error, fetchMore } = useQuery(ALL_NOTES_QUERY, {
+  const { data, loading, error, fetchMore, subscribeToMore } = useQuery(ALL_NOTES_QUERY, {
     variables: {
       categoryId: category,
       offset: 0,
@@ -75,24 +76,42 @@ export function NoteList({ category }) {
     }
   );
 
-  const { data: newNoteData } = useSubscription(gql`
-    subscription NewSharedNote($categoryId: String) {
-      newSharedNote(categoryId: $categoryId) {
-        id
-        content
-        category {
-          id
-          label
-        }
-      }
-    }
-  `, {
-    variables: {
-      categoryId: category
-    }
-  })
+  const client = useApolloClient();
 
-  const newNote = newNoteData?.newSharedNote;
+  useEffect(() => {
+    const unsubscribe = subscribeToMore({
+      document: gql`
+        subscription NewSharedNote($categoryId: String) {
+          newSharedNote(categoryId: $categoryId) {
+            id
+            content
+            category {
+              id
+              label
+            }
+          }
+        }
+      `,
+      variables: {
+        categoryId: category
+      },
+      updateQuery: (previousQueryResult, { subscriptionData }) => {
+        const newNote = subscriptionData.data.newSharedNote;
+        client.cache.writeQuery({
+          query: ALL_NOTES_QUERY,
+          data: {
+            ...previousQueryResult, // __typename: ....
+            notes: [newNote, ...previousQueryResult.notes]
+          },
+          variables: {
+            categoryId: category
+          },
+          overwrite: true
+        });
+      }
+    });
+    return unsubscribe;
+  }, [category]);
 
   if (error && !data) {
     return <Heading> Could not load notes. </Heading>;
@@ -102,18 +121,9 @@ export function NoteList({ category }) {
     return <Spinner />;
   }
 
-  const recentChanges = newNote && (
-    <>
-      <Text>Recent changes: </Text>
-      <UiNote category={newNote.category.label} content={newNote.content}>
-      </UiNote>
-    </>
-  );
-
   const notes = data?.notes.filter((note) => !!note);
   return (
     <Stack spacing={4}>
-      {recentChanges}
       {notes?.map((note) => (
         <UiNote
           key={note.id}
