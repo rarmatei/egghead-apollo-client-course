@@ -149,6 +149,18 @@ const resolvers = {
     },
   },
   Query: {
+    // notes: (root, args, context) => {
+    //   if (!args.categoryId) {
+    //     return allNotes;
+    //   }
+    //   const categorisedNotes = args.categoryId
+    //     ? allNotes.filter((note) => note.categoryId === args.categoryId)
+    //     : allNotes;
+    //   if (args.offset !== undefined && args.offset !== null && args.limit) {
+    //     return categorisedNotes.slice(args.offset, args.offset + args.limit);
+    //   }
+    //   return categorisedNotes;
+    // },
     notes: (root, args, context) => {
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -175,6 +187,7 @@ const resolvers = {
       const noteId = args.id;
       return allNotes.find((note) => note.id === noteId);
     },
+    // categories: () => categories,
     categories: () =>
       new Promise((resolve) => {
         setTimeout(() => {

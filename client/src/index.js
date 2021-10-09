@@ -13,6 +13,7 @@ import {
 } from "@apollo/client";
 import { RetryLink } from "@apollo/client/link/retry";
 import { RestLink } from "apollo-link-rest";
+import { persistCache, LocalStorageWrapper } from 'apollo3-cache-persist';
 
 let selectedNoteIds = makeVar(["2"]);
 
@@ -41,6 +42,13 @@ const retryLink = new RetryLink({
 });
 
 const client = new ApolloClient({
+  defaultOptions: {
+    // useQuery() uses watchQuery under the hood
+    watchQuery: {
+      fetchPolicy: "cache-and-network",
+      nextFetchPolicy: "cache-first"
+    }
+  },
   cache: new InMemoryCache({
     typePolicies: {
       Query: {
@@ -71,15 +79,22 @@ const client = new ApolloClient({
   link: from([retryLink, restLink, httpLink]),
 });
 
-ReactDOM.render(
-  <React.StrictMode>
-    <ChakraProvider>
-      <ApolloProvider client={client}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </ApolloProvider>
-    </ChakraProvider>
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+persistCache({
+  cache: client.cache,
+  storage: new LocalStorageWrapper(window.localStorage)
+}).then(() => {
+  ReactDOM.render(
+    <React.StrictMode>
+      <ChakraProvider>
+        <ApolloProvider client={client}>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </ApolloProvider>
+      </ChakraProvider>
+    </React.StrictMode>,
+    document.getElementById("root")
+  );
+});
+
+

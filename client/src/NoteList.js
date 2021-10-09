@@ -31,7 +31,7 @@ export function NoteList({ category }) {
       offset: 0,
       limit: 3,
     },
-    errorPolicy: "all",
+    errorPolicy: "all"
   });
 
   const [deleteNote] = useMutation(
