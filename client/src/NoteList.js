@@ -8,6 +8,7 @@ import {
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { Link } from "react-router-dom";
 import { setNoteSelection } from ".";
+import { Spinner } from "@chakra-ui/spinner";
 
 const ALL_NOTES_QUERY = gql`
   query GetAllNotes($categoryId: String, $offset: Int, $limit: Int) {
@@ -77,6 +78,10 @@ export function NoteList({ category }) {
 
   if (error && !data) {
     return <Heading> Could not load notes. </Heading>;
+  }
+
+  if (!data) {
+    return <Spinner />;
   }
 
   const notes = data?.notes.filter((note) => !!note);
