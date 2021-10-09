@@ -150,22 +150,37 @@ const resolvers = {
   },
   Query: {
     notes: (root, args, context) => {
-      if (!args.categoryId) {
-        return allNotes;
-      }
-      const categorisedNotes = args.categoryId
-        ? allNotes.filter((note) => note.categoryId === args.categoryId)
-        : allNotes;
-      if (args.offset !== undefined && args.offset !== null && args.limit) {
-        return categorisedNotes.slice(args.offset, args.offset + args.limit);
-      }
-      return categorisedNotes;
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          let toReturn;
+          if (!args.categoryId) {
+            toReturn = allNotes;
+          }
+          const categorisedNotes = args.categoryId
+            ? allNotes.filter((note) => note.categoryId === args.categoryId)
+            : allNotes;
+          if (args.offset !== undefined && args.offset !== null && args.limit) {
+            toReturn = categorisedNotes.slice(
+              args.offset,
+              args.offset + args.limit
+            );
+          } else {
+            toReturn = categorisedNotes;
+          }
+          resolve(toReturn);
+        }, 4000);
+      });
     },
     note: (root, args, context) => {
       const noteId = args.id;
       return allNotes.find((note) => note.id === noteId);
     },
-    categories: () => categories,
+    categories: () =>
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(categories);
+        }, 2500);
+      }),
   },
   Mutation: {
     updateNote: (root, args, context) => {

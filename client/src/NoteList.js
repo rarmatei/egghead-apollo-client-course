@@ -5,10 +5,9 @@ import {
   UiNote,
   ViewNoteButton,
 } from "./shared-ui";
-import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { Link } from "react-router-dom";
 import { setNoteSelection } from ".";
-import { useEffect } from "react";
 
 const ALL_NOTES_QUERY = gql`
   query GetAllNotes($categoryId: String, $offset: Int, $limit: Int) {
@@ -25,17 +24,14 @@ const ALL_NOTES_QUERY = gql`
 `;
 
 export function NoteList({ category }) {
-  const { data, error, fetchMore, subscribeToMore } = useQuery(
-    ALL_NOTES_QUERY,
-    {
-      variables: {
-        categoryId: category,
-        offset: 0,
-        limit: 3,
-      },
-      errorPolicy: "all",
-    }
-  );
+  const { data, error, fetchMore } = useQuery(ALL_NOTES_QUERY, {
+    variables: {
+      categoryId: category,
+      offset: 0,
+      limit: 3,
+    },
+    errorPolicy: "all",
+  });
 
   const [deleteNote] = useMutation(
     gql`
@@ -78,43 +74,6 @@ export function NoteList({ category }) {
       },
     }
   );
-
-  const client = useApolloClient();
-
-  useEffect(() => {
-    const unsubscribe = subscribeToMore({
-      document: gql`
-        subscription NewSharedNote($categoryId: String) {
-          newSharedNote(categoryId: $categoryId) {
-            id
-            content
-            category {
-              id
-              label
-            }
-          }
-        }
-      `,
-      variables: {
-        categoryId: category,
-      },
-      updateQuery: (previousQueryResult, { subscriptionData }) => {
-        const newNote = subscriptionData.data.newSharedNote;
-        client.cache.writeQuery({
-          query: ALL_NOTES_QUERY,
-          data: {
-            ...previousQueryResult, // __typename: ....
-            notes: [newNote, ...previousQueryResult.notes],
-          },
-          variables: {
-            categoryId: category,
-          },
-          overwrite: true,
-        });
-      },
-    });
-    return unsubscribe;
-  }, [category]);
 
   if (error && !data) {
     return <Heading> Could not load notes. </Heading>;
