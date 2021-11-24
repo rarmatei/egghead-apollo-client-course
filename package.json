@@ -4,11 +4,14 @@
   "description": "",
   "scripts": {
     "start": "concurrently --kill-others \"npm --prefix=client start\" \"npm --prefix=server start\"",
-    "install": "concurrently --kill-others \"npm --prefix=client install\" \"npm --prefix=server install\""
+    "postinstall": "concurrently \"npm --prefix=client install\" \"npm --prefix=server install\""
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "apollo-link-rest": "^0.8.0-beta.0"
+  },
+  "devDependencies": {
+    "concurrently": "^6.4.0"
   }
 }
