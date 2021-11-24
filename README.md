@@ -66,6 +66,5 @@ We'll be looking at how Apollo helps us to:
 
 There are 2 folders: `./client` and `./server`. We will mainly work in the client, but we need the server to act as a GraphQL backend.
 
-1. `cd server && npm install`
-2. `cd client && npm install`
-3. In two terminals, run `npm start` in the client and then the server folder (you can also run `npm start` in the root, which will start both)
+1. `npm install`
+2. `npm start`

@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "npm --prefix=client start & npm --prefix=server start"
+    "start": "concurrently --kill-others \"npm --prefix=client start\" \"npm --prefix=server start\"",
+    "install": "concurrently --kill-others \"npm --prefix=client install\" \"npm --prefix=server install\""
   },
   "author": "",
   "license": "ISC"
