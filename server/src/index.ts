@@ -141,7 +141,8 @@ let unpublishedNotes = [
 const resolvers = {
   Note: {
     category: (parent) => {
-      // if (parent.id === "14") {
+      // if (parent.id === "8") {
+      //   console.log("ERROR!");
       //   throw new Error(`Could not retrieve note with ID ${parent.id}`);
       // }
       return categories.find((category) => category.id === parent.categoryId);
@@ -185,8 +186,8 @@ const resolvers = {
     },
     deleteNote: (root, args, context) => {
       const noteId = args.id;
-      if (noteId === "14") {
-        throw new Error("Cannot delete note with ID 14");
+      if (noteId === "6") {
+        throw new Error("Cannot delete note with ID 6");
       }
       const deletedNote = allNotes.find((note) => note.id === noteId);
       allNotes = allNotes.filter((n) => n.id !== noteId);
@@ -231,19 +232,21 @@ const resolvers = {
 //   }
 //   const newCategory = unpublishedCategories.shift();
 //   categories.unshift(newCategory);
-// }, 8000);
+//   console.log("ADDED CATEGORY");
+// }, 45000);
 
 // For subscription lesson
-// setInterval(() => {
-//   if (unpublishedNotes.length === 0) {
-//     return;
-//   }
-//   const newNote = unpublishedNotes.shift();
-//   allNotes.unshift(newNote);
-//   pubsub.publish("NEW_SHARED_NOTE", {
-//     newSharedNote: newNote,
-//   });
-// }, 8000);
+setInterval(() => {
+  if (unpublishedNotes.length === 0) {
+    return;
+  }
+  const newNote = unpublishedNotes.shift();
+  allNotes.unshift(newNote);
+  pubsub.publish("NEW_SHARED_NOTE", {
+    newSharedNote: newNote,
+  });
+  console.log("PUBLISHED NOTE");
+}, 30000);
 
 (async function () {
   const app = express();
